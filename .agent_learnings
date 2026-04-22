@@ -1,0 +1,5 @@
+# Learnings from fixing wget not found in Dockerfile
+
+- The `node:20-slim` image does not include `wget` by default.
+- When a Dockerfile command uses a utility like `wget`, it must be explicitly installed via `apt-get install` if it's not present in the base image.
+- Sandbox environments might have limitations (like overlayfs issues) that prevent full Docker builds, but static verification and partial build logs can still confirm command presence.
