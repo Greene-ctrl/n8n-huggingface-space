@@ -1,6 +1,6 @@
-# Learnings from fixing SSL/TLS trust issues in Dockerfile
+# Learnings from finalizing n8n Docker deployment on Render
 
-- Minimal images like `node:slim` or `alpine` often lack root CA certificates.
-- When using tools that fetch resources over HTTPS (like `wget` or `curl`), you may encounter errors like "certificate not trusted" or "unknown issuer".
-- Installing the `ca-certificates` package is the standard way to provide the necessary trust anchors for these tools to verify server certificates (e.g., for GitHub or Ollama).
-- This is a common pattern when building on top of "slim" base images.
+- **Consolidating Dependencies**: Switched from `wget` to `curl` for all downloads to reduce the number of system dependencies and ensure consistency.
+- **SSL Trust**: Explicitly confirmed `ca-certificates` is installed to handle HTTPS downloads from GitHub and Ollama.
+- **Runtime Safety**: Added `rm -rf ""` before `ln -sfn` in `start.sh` to prevent potential symlink creation failures if the path already exists as a directory (e.g., from a previous build).
+- **Environment Robustness**: Set `TERM=xterm` and `DEBIAN_FRONTEND=noninteractive` to ensure a clean build output without `debconf` errors.

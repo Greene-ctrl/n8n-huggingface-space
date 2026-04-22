@@ -1,20 +1,14 @@
 # n8n Dockerfile for Render deployment
 FROM node:20-slim
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    wget \
-    zstd \
-    postgresql \
-    postgresql-contrib \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+ENV TERM=xterm
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl zstd postgresql postgresql-contrib && rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g n8n --legacy-peer-deps
 
 # Qdrant
 ARG QDRANT_VERSION=v1.9.2
-RUN wget "https://github.com/qdrant/qdrant/releases/download/${QDRANT_VERSION}/qdrant-x86_64-unknown-linux-gnu.tar.gz" -O qdrant.tar.gz && \
+RUN curl -L "https://github.com/qdrant/qdrant/releases/download/${QDRANT_VERSION}/qdrant-x86_64-unknown-linux-gnu.tar.gz" -o qdrant.tar.gz && \
     tar -xzf qdrant.tar.gz && mv qdrant /usr/local/bin/qdrant && rm qdrant.tar.gz && \
     mkdir -p /qdrant/storage /qdrant/config
 

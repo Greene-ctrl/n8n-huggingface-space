@@ -74,6 +74,7 @@ fi
 echo "--- Qdrant Setup ---"
 QDRANT_CONFIG_DIR="/qdrant/config"
 QDRANT_STORAGE_PATH_IN_CONFIG="/qdrant/storage"
+rm -rf "$QDRANT_STORAGE_PATH_IN_CONFIG"
 ln -sfn "$QDRANT_DATA_DIR" "$QDRANT_STORAGE_PATH_IN_CONFIG"
 
 /usr/local/bin/qdrant --config-path "$QDRANT_CONFIG_DIR/config.yaml" &
