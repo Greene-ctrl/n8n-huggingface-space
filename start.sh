@@ -88,10 +88,10 @@ until curl -sf http://localhost:11434/api/tags > /dev/null 2>&1; do sleep 1; don
 echo "Ollama started."
 
 DEFAULT_MODEL="${DEFAULT_OLLAMA_MODEL:-llama3.1:8b}"
-echo "Checking for Ollama model: $DEFAULT_MODEL"
-if ! ollama show "$DEFAULT_MODEL" > /dev/null 2>&1; then
-    ollama pull "$DEFAULT_MODEL"
-fi
+# echo "Checking for Ollama model: $DEFAULT_MODEL"
+# if ! ollama show "$DEFAULT_MODEL" > /dev/null 2>&1; then
+#     ollama pull "$DEFAULT_MODEL"
+# fi
 
 # --- n8n Start ---
 echo "--- n8n Setup ---"

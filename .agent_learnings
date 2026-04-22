@@ -4,3 +4,6 @@
 - **SSL Trust**: Explicitly confirmed `ca-certificates` is installed to handle HTTPS downloads from GitHub and Ollama.
 - **Runtime Safety**: Added `rm -rf ""` before `ln -sfn` in `start.sh` to prevent potential symlink creation failures if the path already exists as a directory (e.g., from a previous build).
 - **Environment Robustness**: Set `TERM=xterm` and `DEBIAN_FRONTEND=noninteractive` to ensure a clean build output without `debconf` errors.
+
+# Learnings from commenting out Ollama model pulling
+- Preventing automatic resource-heavy operations (like pulling large LLM models) in startup scripts can save bandwidth and speed up deployment, especially in environments with limited resources or where models should be managed separately.
