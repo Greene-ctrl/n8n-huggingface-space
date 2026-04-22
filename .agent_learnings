@@ -1,5 +1,5 @@
-# Learnings from fixing wget not found in Dockerfile
+# Learnings from fixing Ollama installation failure in Dockerfile
 
-- The `node:20-slim` image does not include `wget` by default.
-- When a Dockerfile command uses a utility like `wget`, it must be explicitly installed via `apt-get install` if it's not present in the base image.
-- Sandbox environments might have limitations (like overlayfs issues) that prevent full Docker builds, but static verification and partial build logs can still confirm command presence.
+- The Ollama installation script requires `zstd` for extraction.
+- Even if a previous dependency (`wget`) was fixed, subsequent steps in the Dockerfile might reveal additional missing dependencies.
+- Render build logs provide clear instructions on what is missing (e.g., "Please install zstd and try again").

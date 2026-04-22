@@ -1,7 +1,7 @@
 # n8n Dockerfile for Render deployment
 FROM node:20-slim
 
-RUN apt-get update && apt-get install -y curl wget postgresql postgresql-contrib
+RUN apt-get update && apt-get install -y curl wget zstd postgresql postgresql-contrib
 
 RUN npm install -g n8n
 
