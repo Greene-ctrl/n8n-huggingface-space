@@ -20,21 +20,27 @@ export OLLAMA_MODELS="$OLLAMA_MODELS_DIR"
 
 # --- PostgreSQL Setup & Start (if using local DB) ---
 if [ -n "$USE_LOCAL_POSTGRES" ]; then
+    PG_BIN_DIR=$(ls -d /usr/lib/postgresql/*/bin | head -n 1)
+    if [ -z "$PG_BIN_DIR" ]; then
+        echo "ERROR: PostgreSQL binaries not found."
+        exit 1
+    fi
+    export PATH="$PG_BIN_DIR:$PATH"
     echo "--- PostgreSQL Setup (local mode) ---"
     POSTGRES_PORT="${DB_POSTGRESDB_PORT:-5432}"
     chmod u+rwx "$POSTGRES_DATA_DIR"
 
     if [ ! -d "$POSTGRES_DATA_DIR/base" ]; then
         echo "Initializing PostgreSQL..."
-        /usr/lib/postgresql/14/bin/initdb -D "$POSTGRES_DATA_DIR" --username=n8nuser --no-locale --encoding=UTF8
+        initdb -D "$POSTGRES_DATA_DIR" --username=n8nuser --no-locale --encoding=UTF8
         echo "PostgreSQL Initialized."
     fi
 
     echo "Starting PostgreSQL..."
-    /usr/lib/postgresql/14/bin/postgres -D "$POSTGRES_DATA_DIR" -p "$POSTGRES_PORT" &
+    postgres -D "$POSTGRES_DATA_DIR" -p "$POSTGRES_PORT" &
     PG_PID=$!
     
-    until /usr/lib/postgresql/14/bin/pg_isready -h localhost -p "$POSTGRES_PORT" -U n8nuser -q; do
+    until pg_isready -h localhost -p "$POSTGRES_PORT" -U n8nuser -q; do
         echo -n "."
         sleep 1
     done
@@ -50,7 +56,7 @@ if [ -n "$USE_LOCAL_POSTGRES" ]; then
         exit 1
     fi
 
-    /usr/lib/postgresql/14/bin/psql -v ON_ERROR_STOP=1 --username=n8nuser --port="$POSTGRES_PORT" --host=localhost postgres <<-EOSQL
+    psql -v ON_ERROR_STOP=1 --username=n8nuser --port="$POSTGRES_PORT" --host=localhost postgres <<-EOSQL
         CREATE ROLE "$PG_ROLE_NAME" WITH LOGIN PASSWORD '$PG_PASSWORD';
         CREATE DATABASE "$PG_DB_NAME" OWNER "$PG_ROLE_NAME";
 EOSQL

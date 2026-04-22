@@ -1,5 +1,6 @@
-# Learnings from fixing runtime permission issues in Dockerfile
+# Learnings from fixing Docker build and runtime issues on Render
 
-- Even if a directory is created during build time as root, runtime scripts running as a non-root user (e.g., `n8nuser`) will fail if they need write access (like creating symlinks or data files).
-- The `chown` command in the Dockerfile should include all directories that the application or its startup script will need to modify at runtime.
-- Runtime logs are essential for diagnosing permission issues that are not apparent during the build phase.
+- **Dependency awareness**: Base images like `node:slim` are very minimal. Always ensure essential utilities like `wget`, `curl`, and `zstd` are installed if used in subsequent build steps.
+- **Runtime permissions**: Directories created by root in the Dockerfile must be explicitly `chown`ed if a non-root user needs to write to them at runtime (e.g., for creating symlinks).
+- **Version robustness**: Avoid hardcoding version-specific paths (like `/usr/lib/postgresql/14`) in scripts. Instead, use dynamic discovery (e.g., `PG_BIN_DIR=$(ls -d /usr/lib/postgresql/*/bin | head -n 1)`) or rely on `PATH` if possible.
+- **Render log analysis**: Carefully distinguish between build-time failures (found in build logs) and runtime failures (found in application logs).
