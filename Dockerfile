@@ -3,7 +3,7 @@ FROM node:20-slim
 
 RUN apt-get update && apt-get install -y curl wget zstd postgresql postgresql-contrib
 
-RUN npm install -g n8n
+RUN npm install -g n8n --legacy-peer-deps
 
 # Qdrant
 ARG QDRANT_VERSION=v1.9.2

@@ -1,6 +1,5 @@
-# Learnings from fixing Docker build and runtime issues on Render
+# Learnings from fixing npm peer dependency conflicts in Dockerfile
 
-- **Dependency awareness**: Base images like `node:slim` are very minimal. Always ensure essential utilities like `wget`, `curl`, and `zstd` are installed if used in subsequent build steps.
-- **Runtime permissions**: Directories created by root in the Dockerfile must be explicitly `chown`ed if a non-root user needs to write to them at runtime (e.g., for creating symlinks).
-- **Version robustness**: Avoid hardcoding version-specific paths (like `/usr/lib/postgresql/14`) in scripts. Instead, use dynamic discovery (e.g., `PG_BIN_DIR=$(ls -d /usr/lib/postgresql/*/bin | head -n 1)`) or rely on `PATH` if possible.
-- **Render log analysis**: Carefully distinguish between build-time failures (found in build logs) and runtime failures (found in application logs).
+- Large projects like `n8n` may have complex dependency trees with conflicting peer dependencies (e.g., `@sentry/node`, `openai`).
+- Using `--legacy-peer-deps` with `npm install` can bypass these conflicts by allowing the installation to proceed even if peer dependency requirements are not strictly met, which is often necessary when installing global tools that aggregate many plugins.
+- It is important to distinguish between warnings (which might not block the build) and errors (which do). However, cleaning up warnings where possible leads to more stable and readable build logs.
