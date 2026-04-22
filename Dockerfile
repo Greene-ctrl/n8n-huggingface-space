@@ -19,7 +19,7 @@ RUN curl -fsSL https://ollama.com/install.sh | sh
 # User and directories
 RUN useradd -m -s /bin/bash n8nuser
 RUN mkdir -p /home/n8nuser/.n8n /home/n8nuser/.ollama /data
-RUN chown -R n8nuser:n8nuser /home/n8nuser /data
+RUN chown -R n8nuser:n8nuser /home/n8nuser /data /qdrant
 
 ENV N8N_PORT="5678"
 ENV NODE_ENV="production"

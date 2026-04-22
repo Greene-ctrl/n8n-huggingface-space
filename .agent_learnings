@@ -1,5 +1,5 @@
-# Learnings from fixing Ollama installation failure in Dockerfile
+# Learnings from fixing runtime permission issues in Dockerfile
 
-- The Ollama installation script requires `zstd` for extraction.
-- Even if a previous dependency (`wget`) was fixed, subsequent steps in the Dockerfile might reveal additional missing dependencies.
-- Render build logs provide clear instructions on what is missing (e.g., "Please install zstd and try again").
+- Even if a directory is created during build time as root, runtime scripts running as a non-root user (e.g., `n8nuser`) will fail if they need write access (like creating symlinks or data files).
+- The `chown` command in the Dockerfile should include all directories that the application or its startup script will need to modify at runtime.
+- Runtime logs are essential for diagnosing permission issues that are not apparent during the build phase.
