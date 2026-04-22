@@ -1,6 +1,6 @@
-# Learnings from fixing n8n deployment on Render
+# Learnings from fixing SSL/TLS trust issues in Dockerfile
 
-- **Difference in Logs**: Build logs showed missing dependencies (`wget`, `zstd`) and `debconf` UI warnings. Runtime logs showed permission issues (`Permission denied` for symlinks in `/qdrant`) and hardcoded path failures for PostgreSQL version 15.
-- **Debian Non-interactive**: Setting `ENV DEBIAN_FRONTEND=noninteractive` and using `--no-install-recommends` silences noisy `debconf` warnings and reduces image size.
-- **NPM Peer Deps**: For complex packages like `n8n`, `--legacy-peer-deps` is often necessary to bypass strict peer dependency checks that would otherwise clutter logs or block installation.
-- **Dynamic Binary Paths**: Hardcoding paths like `/usr/lib/postgresql/14/bin` is fragile. Using `ls -d /usr/lib/postgresql/*/bin` to discover the installed version is much more robust.
+- Minimal images like `node:slim` or `alpine` often lack root CA certificates.
+- When using tools that fetch resources over HTTPS (like `wget` or `curl`), you may encounter errors like "certificate not trusted" or "unknown issuer".
+- Installing the `ca-certificates` package is the standard way to provide the necessary trust anchors for these tools to verify server certificates (e.g., for GitHub or Ollama).
+- This is a common pattern when building on top of "slim" base images.
