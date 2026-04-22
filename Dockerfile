@@ -1,7 +1,13 @@
 # n8n Dockerfile for Render deployment
 FROM node:20-slim
-
-RUN apt-get update && apt-get install -y curl wget zstd postgresql postgresql-contrib
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    wget \
+    zstd \
+    postgresql \
+    postgresql-contrib \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g n8n --legacy-peer-deps
 

@@ -1,5 +1,6 @@
-# Learnings from fixing npm peer dependency conflicts in Dockerfile
+# Learnings from fixing n8n deployment on Render
 
-- Large projects like `n8n` may have complex dependency trees with conflicting peer dependencies (e.g., `@sentry/node`, `openai`).
-- Using `--legacy-peer-deps` with `npm install` can bypass these conflicts by allowing the installation to proceed even if peer dependency requirements are not strictly met, which is often necessary when installing global tools that aggregate many plugins.
-- It is important to distinguish between warnings (which might not block the build) and errors (which do). However, cleaning up warnings where possible leads to more stable and readable build logs.
+- **Difference in Logs**: Build logs showed missing dependencies (`wget`, `zstd`) and `debconf` UI warnings. Runtime logs showed permission issues (`Permission denied` for symlinks in `/qdrant`) and hardcoded path failures for PostgreSQL version 15.
+- **Debian Non-interactive**: Setting `ENV DEBIAN_FRONTEND=noninteractive` and using `--no-install-recommends` silences noisy `debconf` warnings and reduces image size.
+- **NPM Peer Deps**: For complex packages like `n8n`, `--legacy-peer-deps` is often necessary to bypass strict peer dependency checks that would otherwise clutter logs or block installation.
+- **Dynamic Binary Paths**: Hardcoding paths like `/usr/lib/postgresql/14/bin` is fragile. Using `ls -d /usr/lib/postgresql/*/bin` to discover the installed version is much more robust.
