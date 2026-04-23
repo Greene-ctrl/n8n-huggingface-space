@@ -1,9 +1,9 @@
-# Learnings from finalizing n8n Docker deployment on Render
+# Learnings from removing Ollama from n8n Docker deployment
 
-- **Consolidating Dependencies**: Switched from `wget` to `curl` for all downloads to reduce the number of system dependencies and ensure consistency.
-- **SSL Trust**: Explicitly confirmed `ca-certificates` is installed to handle HTTPS downloads from GitHub and Ollama.
-- **Runtime Safety**: Added `rm -rf ""` before `ln -sfn` in `start.sh` to prevent potential symlink creation failures if the path already exists as a directory (e.g., from a previous build).
-- **Environment Robustness**: Set `TERM=xterm` and `DEBIAN_FRONTEND=noninteractive` to ensure a clean build output without `debconf` errors.
-
-# Learnings from commenting out Ollama model pulling
-- Preventing automatic resource-heavy operations (like pulling large LLM models) in startup scripts can save bandwidth and speed up deployment, especially in environments with limited resources or where models should be managed separately.
+- **Cleaning up dependencies**: When removing a major service like Ollama, it's important to remove all traces:
+    - Dockerfile installation commands.
+    - Dockerfile directory creation and permission setup.
+    - Startup script service initialization.
+    - Startup script environment variables.
+- **Reducing Image Size**: Removing large binaries (Ollama) and cleaning up caches (`npm cache clean --force`, `rm -rf /var/lib/apt/lists/*`) significantly improves build times and reduces costs on platforms like Render.
+- **Incremental Refinement**: Build logs often show "ghost" resource usage if a previous command is partially deleted. A full rewrite of affected sections ensures no hidden side effects remain.

@@ -8,15 +8,13 @@ echo "Running as user: $(whoami) (UID: $(id -u), GID: $(id -g))"
 N8N_DATA_DIR="/data/.n8n"
 POSTGRES_DATA_DIR="/data/postgres"
 QDRANT_DATA_DIR="/data/qdrant_storage"
-OLLAMA_MODELS_DIR="/data/.ollama"
 
 echo "Ensuring application data directories exist..."
-mkdir -p "$N8N_DATA_DIR" "$POSTGRES_DATA_DIR" "$QDRANT_DATA_DIR" "$OLLAMA_MODELS_DIR"
+mkdir -p "$N8N_DATA_DIR" "$POSTGRES_DATA_DIR" "$QDRANT_DATA_DIR"
 echo "Permissions of data directories:"
-ls -ld "$N8N_DATA_DIR" "$POSTGRES_DATA_DIR" "$QDRANT_DATA_DIR" "$OLLAMA_MODELS_DIR"
+ls -ld "$N8N_DATA_DIR" "$POSTGRES_DATA_DIR" "$QDRANT_DATA_DIR"
 
 ln -sfn "$N8N_DATA_DIR" /home/n8nuser/.n8n
-export OLLAMA_MODELS="$OLLAMA_MODELS_DIR"
 
 # --- PostgreSQL Setup & Start (if using local DB) ---
 if [ -n "$USE_LOCAL_POSTGRES" ]; then
@@ -81,17 +79,6 @@ ln -sfn "$QDRANT_DATA_DIR" "$QDRANT_STORAGE_PATH_IN_CONFIG"
 until curl -sf http://localhost:6333/readyz > /dev/null; do sleep 1; done
 echo "Qdrant started."
 
-# --- Ollama Start ---
-echo "--- Ollama Setup ---"
-ollama serve &
-until curl -sf http://localhost:11434/api/tags > /dev/null 2>&1; do sleep 1; done
-echo "Ollama started."
-
-DEFAULT_MODEL="${DEFAULT_OLLAMA_MODEL:-llama3.1:8b}"
-# echo "Checking for Ollama model: $DEFAULT_MODEL"
-# if ! ollama show "$DEFAULT_MODEL" > /dev/null 2>&1; then
-#     ollama pull "$DEFAULT_MODEL"
-# fi
 
 # --- n8n Start ---
 echo "--- n8n Setup ---"
@@ -107,7 +94,6 @@ if [ -z "$DB_TYPE" ]; then
 fi
 
 export N8N_USER_FOLDER="/home/n8nuser/.n8n"
-export GENAI_MODELS_N8N_DEFAULT_MODEL="$DEFAULT_MODEL"
 
 echo "Using PostgreSQL: $DB_POSTGRESDB_HOST:$DB_POSTGRESDB_PORT/$DB_POSTGRESDB_DATABASE"
 echo "N8N URLs: $N8N_EDITOR_BASE_URL"
