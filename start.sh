@@ -35,7 +35,7 @@ if [ -n "$USE_LOCAL_POSTGRES" ]; then
     fi
 
     echo "Starting PostgreSQL..."
-    postgres -D "$POSTGRES_DATA_DIR" -p "$POSTGRES_PORT" &
+    postgres -D "$POSTGRES_DATA_DIR" -p "$POSTGRES_PORT" -c unix_socket_directories='/tmp' &
     PG_PID=$!
     
     until pg_isready -h localhost -p "$POSTGRES_PORT" -U n8nuser -q; do
@@ -54,7 +54,7 @@ if [ -n "$USE_LOCAL_POSTGRES" ]; then
         exit 1
     fi
 
-    psql -v ON_ERROR_STOP=1 --username=n8nuser --port="$POSTGRES_PORT" --host=localhost postgres <<-EOSQL
+    psql -v ON_ERROR_STOP=1 --username=n8nuser --port="$POSTGRES_PORT" --host='/tmp' postgres <<-EOSQL
         CREATE ROLE "$PG_ROLE_NAME" WITH LOGIN PASSWORD '$PG_PASSWORD';
         CREATE DATABASE "$PG_DB_NAME" OWNER "$PG_ROLE_NAME";
 EOSQL
