@@ -61,7 +61,7 @@ EOSQL
     echo "PostgreSQL database created."
 
     export DB_TYPE="postgresdb"
-    export DB_POSTGRESDB_HOST="localhost"
+    export DB_POSTGRESDB_HOST="/tmp"
     export DB_POSTGRESDB_PORT="$POSTGRES_PORT"
     export DB_POSTGRESDB_DATABASE="$PG_DB_NAME"
     export DB_POSTGRESDB_USER="$PG_ROLE_NAME"
