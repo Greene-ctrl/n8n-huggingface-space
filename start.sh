@@ -38,7 +38,7 @@ if [ -n "$USE_LOCAL_POSTGRES" ]; then
     postgres -D "$POSTGRES_DATA_DIR" -p "$POSTGRES_PORT" -c unix_socket_directories='/tmp' &
     PG_PID=$!
     
-    until pg_isready -h localhost -p "$POSTGRES_PORT" -U n8nuser -q; do
+    until pg_isready -h /tmp -p "$POSTGRES_PORT" -U n8nuser -q; do
         echo -n "."
         sleep 1
     done
