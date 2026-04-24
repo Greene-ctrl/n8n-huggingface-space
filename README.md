@@ -1,6 +1,6 @@
 # n8n Hugging Face Space
 
-This repository contains the Docker configuration for running n8n on Hugging Face Spaces with integrated services (Ollama, Qdrant, PostgreSQL).
+This repository contains the Docker configuration for running n8n on Hugging Face Spaces with integrated services (Qdrant, PostgreSQL).
 
 ## Environment Variables
 
